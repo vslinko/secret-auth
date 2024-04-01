@@ -1,0 +1,9 @@
+displayName: Secret Auth
+type: middleware
+
+import: github.com/vslinko/secret-auth
+
+summary: 'Authorise requests by secret cookie'
+
+testData:
+  secretKey: "123"
