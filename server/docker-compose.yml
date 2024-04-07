@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  secret-auth-server:
+    image: vslinko/secret-auth-server:latest
+    environment:
+      - S_USERNAME=user
+      - S_PASSWORD=pass
+      - S_COOKIE_NAME=key
+      - S_COOKIE_VALUE=value
+      - S_COOKIE_DOMAIN=localhost
+      - S_REDIRECT_URL=https://google.com/
+    ports:
+      - 8080:8080
