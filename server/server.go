@@ -40,8 +40,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		MaxAge: 60 * 60 * 24 * 365,
 	})
 
-	// Respond to the client
-	http.Redirect(w, r, os.Getenv("S_REDIRECT_URL"), http.StatusFound)
+	// Respond to the client; check for the return_url query param
+	// Use the return_url for redirection if present, otherwise use the environment variable
+	redirectURL := os.Getenv("S_REDIRECT_URL") // Default redirect URL from env var
+	if returnURL := r.URL.Query().Get("return_url"); returnURL != "" {
+		redirectURL = returnURL // Override with the return_url query param if present
+	}
+	http.Redirect(w, r, redirectURL, http.StatusFound)
 }
 
 func parseAuth(r *http.Request) (username, password string, ok bool) {

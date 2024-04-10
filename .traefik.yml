@@ -6,4 +6,7 @@ import: github.com/vslinko/secret-auth
 summary: 'Authorise requests by secret cookie'
 
 testData:
+  cookieName: "myCookie"
   secretKey: "123"
+  authUrl: "https://auth.example.com/"
+  returnUrlParam: "return_to"

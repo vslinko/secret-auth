@@ -37,6 +37,8 @@ http:
     secret-auth:
       plugin:
         secret-auth:
-          cookieName: myCookie
-          secretKey: mySecretKey
+          cookieName: "myCookie"
+          secretKey: "123"
+          authUrl: "https://auth.example.com/"
+          returnUrlParam: "return_to"
 ```
