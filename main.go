@@ -56,7 +56,7 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
 func (a *SecretAuthPlugin) checkAuth(req *http.Request) bool {
 	cookie, err := req.Cookie(a.cookieName)
 
-	if err != nil && cookie.Value == a.secretKey {
+	if err == nil && cookie.Value == a.secretKey {
 		return true
 	}
 
