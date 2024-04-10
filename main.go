@@ -9,6 +9,8 @@ import (
 
 type Config struct {
 	CookieName     string `json:"cookieName,omitempty"`
+	HeaderName     string `json:"headerName,omitempty"`
+	ParamName      string `json:"paramName,omitempty"`
 	SecretKey      string `json:"secretKey,omitempty"`
 	AuthUrl        string `json:"authUrl,omitempty"`
 	ReturnUrlParam string `json:"returnUrlParam,omitempty"`
@@ -17,6 +19,8 @@ type Config struct {
 func CreateConfig() *Config {
 	return &Config{
 		CookieName:     "secret",
+		HeaderName:     "",
+		ParamName:      "",
 		SecretKey:      "",
 		AuthUrl:        "",
 		ReturnUrlParam: "return_url",
@@ -26,6 +30,8 @@ func CreateConfig() *Config {
 type SecretAuthPlugin struct {
 	next           http.Handler
 	cookieName     string
+	headerName     string
+	paramName      string
 	secretKey      string
 	authUrl        string
 	returnUrlParam string
@@ -39,16 +45,38 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
 	return &SecretAuthPlugin{
 		next:           next,
 		cookieName:     config.CookieName,
+		headerName:     config.HeaderName,
+		paramName:      config.ParamName,
 		secretKey:      config.SecretKey,
 		authUrl:        config.AuthUrl,
 		returnUrlParam: config.ReturnUrlParam,
 	}, nil
 }
 
-func (a *SecretAuthPlugin) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
+func (a *SecretAuthPlugin) checkAuth(req *http.Request) bool {
 	cookie, err := req.Cookie(a.cookieName)
 
-	if err != nil || cookie.Value != a.secretKey {
+	if err != nil && cookie.Value == a.secretKey {
+		return true
+	}
+
+	if a.headerName != "" {
+		if header := req.Header.Get(a.headerName); header == a.secretKey {
+			return true
+		}
+	}
+
+	if a.paramName != "" {
+		if param := req.URL.Query().Get(a.paramName); param == a.secretKey {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (a *SecretAuthPlugin) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
+	if !a.checkAuth(req) {
 		if a.authUrl != "" {
 			// Obtain the complete request URL
 			requestURL := getFullURL(req)
