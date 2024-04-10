@@ -3,10 +3,12 @@ type: middleware
 
 import: github.com/vslinko/secret-auth
 
-summary: 'Authorise requests by secret cookie'
+summary: 'Authorise requests by secret cookie, header or query param'
 
 testData:
   cookieName: "myCookie"
+  headerName: "X-API-Token"
+  paramName: "token"
   secretKey: "123"
   authUrl: "https://auth.example.com/"
   returnUrlParam: "return_to"
