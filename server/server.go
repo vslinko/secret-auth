@@ -33,11 +33,14 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	// If authentication is successful, set a cookie
 	http.SetCookie(w, &http.Cookie{
-		Name:   os.Getenv("S_COOKIE_NAME"),
-		Value:  os.Getenv("S_COOKIE_VALUE"),
-		Path:   "/",
-		Domain: os.Getenv("S_COOKIE_DOMAIN"),
-		MaxAge: 60 * 60 * 24 * 365,
+		Name:     os.Getenv("S_COOKIE_NAME"),
+		Value:    os.Getenv("S_COOKIE_VALUE"),
+		Path:     "/",
+		Domain:   os.Getenv("S_COOKIE_DOMAIN"),
+		MaxAge:   60 * 60 * 24 * 365,
+		Secure:   true,
+		HttpOnly: true,
+		SameSite: http.SameSiteStrictMode,
 	})
 
 	// Respond to the client; check for the return_url query param
