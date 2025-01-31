@@ -1,3 +1,3 @@
-FROM alpine:3.19.1
+FROM alpine:3.21.2
 COPY ./server /
 ENTRYPOINT ["/server"]
